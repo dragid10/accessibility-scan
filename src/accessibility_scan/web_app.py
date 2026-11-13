@@ -77,6 +77,7 @@ def start_scan():
         "start_url": request.form["start_url"],
         "max_pages": int(request.form.get("max_pages", 50)),
         "headless": True,
+        "wcag_level": request.form.get("wcag_level", "2.2"),
     }
 
     # Auth if provided (all required fields)
@@ -254,6 +255,7 @@ def run_scan(scan_id: str, config: dict, crawl: bool):
                 "start_url": config.get("start_url"),
                 "max_pages": config.get("max_pages"),
                 "crawl": crawl,
+                "wcag_level": config.get("wcag_level", "2.2"),
             }
         }
 
@@ -281,6 +283,7 @@ def run_scan(scan_id: str, config: dict, crawl: bool):
                 "start_url": config.get("start_url"),
                 "max_pages": config.get("max_pages"),
                 "crawl": crawl,
+                "wcag_level": config.get("wcag_level", "2.2"),
             }
         }
 

@@ -1,10 +1,11 @@
 # Accessibility Scanner
 
-WCAG 2.1 accessibility scanner with Jira-ready exports (CSV, JSON, Markdown).
+WCAG 2.0, 2.1, and 2.2 accessibility scanner with Jira-ready exports (CSV, JSON, Markdown).
 
 ## Features
 
-- **WCAG 2.1 scanning** using axe-core
+- **WCAG 2.0, 2.1, and 2.2 scanning** using axe-core
+- **Configurable WCAG level** - choose which version to test against
 - **Automatic crawling** to discover pages
 - **Multiple export formats**:
   - CSV for Jira bulk import
@@ -56,6 +57,10 @@ Create `config.yml`:
 # Target
 start_url: https://example.com
 max_pages: 50
+
+# WCAG version (2.0, 2.1, or 2.2)
+# Default: 2.2 (recommended)
+wcag_level: "2.2"
 
 # Authentication (optional)
 authentication:
@@ -135,6 +140,9 @@ accessibility-scan scan --config config.yml
 # Scan with crawling
 accessibility-scan scan --config config.yml --crawl
 
+# Specify WCAG level
+accessibility-scan scan --url https://example.com --wcag-level 2.2
+
 # Filter by minimum severity
 accessibility-scan scan --url https://example.com --min-severity serious
 
@@ -147,6 +155,16 @@ accessibility-scan web
 # Custom web UI port
 accessibility-scan web --port 8080 --host 0.0.0.0
 ```
+
+### WCAG Level Selection
+
+Choose which WCAG version to test against:
+
+- `--wcag-level 2.2` - WCAG 2.2 (recommended, default)
+- `--wcag-level 2.1` - WCAG 2.1
+- `--wcag-level 2.0` - WCAG 2.0
+
+Each level includes conformance levels A and AA. Higher versions include all rules from previous versions plus new success criteria.
 
 ### Severity Filtering
 

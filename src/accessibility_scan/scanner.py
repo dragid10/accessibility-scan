@@ -13,6 +13,18 @@ class AccessibilityScanner:
     def __init__(self, config: Dict):
         self.config = config
         self.results = []
+        self.wcag_level = config.get("wcag_level", "2.2")
+
+    def _get_wcag_tags(self) -> List[str]:
+        """Get axe-core tags for the specified WCAG level"""
+        # Map WCAG levels to axe-core tags
+        # Each level includes A and AA conformance levels (AAA is rarely required)
+        tag_map = {
+            "2.0": ["wcag2a", "wcag2aa"],
+            "2.1": ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"],
+            "2.2": ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22a", "wcag22aa"],
+        }
+        return tag_map.get(self.wcag_level, tag_map["2.2"])
 
     async def scan_page(self, page: Page, url: str) -> Dict:
         """Scan single page for violations"""
@@ -21,7 +33,17 @@ class AccessibilityScanner:
         await page.goto(url, wait_until="load", timeout=30000)
 
         axe = Axe()
-        results = await axe.run(page)
+
+        # Configure axe to run only rules for the specified WCAG level
+        tags = self._get_wcag_tags()
+        axe_options = {
+            "runOnly": {
+                "type": "tag",
+                "values": tags
+            }
+        }
+
+        results = await axe.run(page, options=axe_options)
 
         # axe-playwright-python returns AxeResults object with .response dict
         response = results.response
@@ -31,7 +53,8 @@ class AccessibilityScanner:
             "violations": response.get("violations", []),
             "passes": len(response.get("passes", [])),
             "inapplicable": len(response.get("inapplicable", [])),
-            "incomplete": len(response.get("incomplete", []))
+            "incomplete": len(response.get("incomplete", [])),
+            "wcag_level": self.wcag_level
         }
 
     async def scan(self, urls: List[str], progress_callback: Optional[Callable[[int, int], None]] = None) -> List[Dict]:

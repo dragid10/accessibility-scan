@@ -10,7 +10,7 @@
     <div class="container">
         <header>
             <h1>Accessibility Scanner</h1>
-            <p>WCAG 2.1 violations exported to CSV, JSON, and Markdown</p>
+            <p>WCAG 2.0, 2.1, and 2.2 violations exported to CSV, JSON, and Markdown</p>
             <nav style="margin-top: 1rem;">
                 <a href="/" style="color: #1976d2;">← Back to History</a>
             </nav>
@@ -27,6 +27,16 @@
                                placeholder="https://example.com"
                                value="{{ config.start_url if config else '' }}">
                         <small>Homepage or main entry point</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="wcag_level">WCAG Level</label>
+                        <select id="wcag_level" name="wcag_level">
+                            <option value="2.2" {% if not config or config.wcag_level == '2.2' %}selected{% endif %}>WCAG 2.2 (Recommended)</option>
+                            <option value="2.1" {% if config and config.wcag_level == '2.1' %}selected{% endif %}>WCAG 2.1</option>
+                            <option value="2.0" {% if config and config.wcag_level == '2.0' %}selected{% endif %}>WCAG 2.0</option>
+                        </select>
+                        <small>Select which WCAG version to test against</small>
                     </div>
 
                     <div class="form-group">

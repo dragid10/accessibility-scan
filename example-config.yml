@@ -4,6 +4,10 @@
 start_url: https://example.com
 max_pages: 50
 
+# WCAG version to test against (2.0, 2.1, or 2.2)
+# Default: 2.2 (recommended)
+wcag_level: "2.2"
+
 # Authentication (optional - remove if not needed)
 authentication:
   login_url: https://example.com/login

@@ -29,7 +29,8 @@ def main():
 @click.option('--crawl/--no-crawl', default=False, help='Crawl to discover pages')
 @click.option('--output', type=click.Path(), default='./scan-results', help='Output directory')
 @click.option('--min-severity', type=click.Choice(['minor', 'moderate', 'serious', 'critical'], case_sensitive=False), help='Minimum severity to include in results')
-def scan(config, url, crawl, output, min_severity):
+@click.option('--wcag-level', type=click.Choice(['2.0', '2.1', '2.2'], case_sensitive=False), default='2.2', help='WCAG version to test against (default: 2.2)')
+def scan(config, url, crawl, output, min_severity, wcag_level):
     """Run accessibility scan"""
 
     if not config and not url:
@@ -43,12 +44,18 @@ def scan(config, url, crawl, output, min_severity):
     else:
         cfg = {"start_url": url, "max_pages": 1}
 
+    # Override wcag_level from CLI if provided
+    if wcag_level:
+        cfg["wcag_level"] = wcag_level
+
     asyncio.run(_run_scan(cfg, crawl, output, min_severity))
 
 
 async def _run_scan(config: dict, do_crawl: bool, output_dir: str, min_severity: str = None):
     """Run scan async"""
+    wcag_level = config.get("wcag_level", "2.2")
     console.print("[bold blue]Starting accessibility scan...[/bold blue]")
+    console.print(f"[cyan]WCAG Level: {wcag_level}[/cyan]")
 
     if min_severity:
         console.print(f"[yellow]Filtering: minimum severity = {min_severity.upper()}[/yellow]")
